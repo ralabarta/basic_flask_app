@@ -11,19 +11,17 @@ app.config['MONGODB_SETTINGS'] = {
 }
 db = MongoEngine()
 db.init_app(app)
-class Todo(db.Document):
+class Movie(db.Document):
     title = db.StringField(max_length=60)
-    text = db.StringField()
-    done = db.BooleanField(default=False)
+    description = db.StringField()
+    price = db.IntegerField(default=0)
     pub_date = db.DateTimeField(default=datetime.datetime.now)
     
 @app.route("/api")
-def index():
-    Todo.objects().delete()
-    Todo(title="Simple todo A", text="12345678910").save()
-    Todo(title="Simple todo B", text="12345678910").save()
-    Todo.objects(title__contains="B").update(set__text="Hello world")
-    todos = Todo.objects().to_json()
+def index(title,description,price,pub_date):
+    Movie.objects().delete()
+    Movie(title,description,price,pub_date).save()
+    todos = Movie.objects().to_json()
     return Response(todos, mimetype="application/json", status=200)
     
 if __name__ == "__main__":
